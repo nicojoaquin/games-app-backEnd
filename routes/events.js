@@ -16,9 +16,11 @@ router.get('/', getEvents);
 router.post(
   '/',
   [
+    check('id', 'El id es obligatorio').not().isEmpty(),
     check('title', 'El título es obligatorio').not().isEmpty(),
-    check('start', 'Fecha de inicio es obligatoria').custom(isDate),
-    check('end', 'Fecha de finalización es obligatoria').custom(isDate),
+    check('thumbnail', 'La imagen es obligatoria').not().isEmpty(),
+    // check('start', 'Fecha de inicio es obligatoria').custom(isDate),
+    // check('end', 'Fecha de finalización es obligatoria').custom(isDate),
     validateFields
   ],
   createEvent);
@@ -27,9 +29,11 @@ router.post(
 router.put(
   '/:id',
   [
+    check('id', 'El id es obligatorio').not().isEmpty(),
     check('title', 'El título es obligatorio').not().isEmpty(),
-    check('start', 'Fecha de inicio es obligatoria').custom(isDate),
-    check('end', 'Fecha de finalización es obligatoria').custom(isDate),
+    check('thumbnail', 'La imagen es obligatoria').not().isEmpty(),
+    // check('start', 'Fecha de inicio es obligatoria').custom(isDate),
+    // check('end', 'Fecha de finalización es obligatoria').custom(isDate),
     validateFields
   ],
   updateEvent);
