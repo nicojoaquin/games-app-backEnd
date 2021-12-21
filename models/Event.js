@@ -4,7 +4,8 @@ const EventSchema = new Schema({
 
   id: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
   },
 
   title: {
@@ -15,6 +16,11 @@ const EventSchema = new Schema({
   thumbnail: {
     type: String,
     required: true,
+  },
+
+  played: {
+    type: Boolean,
+    required: true
   },
 
   user: {

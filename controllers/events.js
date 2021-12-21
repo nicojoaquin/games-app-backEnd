@@ -15,7 +15,18 @@ const getEvents = async (req, res = response) => {
 
 const createEvent = async (req, res = response) => {
 
-  const event = new Event(req.body)
+  const {id} = req.body;
+
+  let event = await Event.findOne({id});
+
+    if(event) {
+      return res.status(400).json({
+        ok: false,
+        msg: "It's already on your wishlist!",
+      });
+    }
+
+  event = new Event(req.body)
 
   try {
 
