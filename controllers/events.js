@@ -15,40 +15,27 @@ const getEvents = async (req, res = response) => {
 
 const createEvent = async (req, res = response) => {
 
-  const {id} = req.body;
+  const event = new Event( req.body );
 
-  let event = await Event.findOne({id});
+    try {
 
-    if(event) {
-      return res.status(400).json({
-        ok: false,
-        msg: "It's already on your wishlist!",
-      });
+      event.user = req.uid;
+        
+        const saveEvent = await event.save();
+
+        res.json({
+            ok: true,
+            event: saveEvent
+        })
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            ok: false,
+            msg: 'ezrror'
+        });
     }
-
-  event = new Event(req.body)
-
-  try {
-
-    event.user = req.uid;
-
-    await event.save();
- 
-    res.json({
-      ok: true,
-      event: event
-    });
-    
-  } catch (err) {
-    
-    console.warn(err);
-
-    res.status(500).json({
-      ok: false,
-      msg: 'error'
-    });
-
-  }
 
 };
 
