@@ -6,9 +6,16 @@ const getEvents = async (req, res = response) => {
   const events = await Event.find()
                             .populate('user', 'name');
 
+                            
+
+  const uid = req.uid;
+
+  const actualEvents = events.filter(event => event.user._id.toString() === uid)
+  .sort((a, b) => b.date - a.date );
+
   res.json({
     ok: true,
-    events
+    actualEvents
   });
 
 };
@@ -20,8 +27,7 @@ const createEvent = async (req, res = response) => {
     try {
 
       event.user = req.uid;
-        
-        const saveEvent = await event.save();
+      const saveEvent = await event.save();
 
         res.json({
             ok: true,
@@ -33,7 +39,7 @@ const createEvent = async (req, res = response) => {
         console.log(error)
         res.status(500).json({
             ok: false,
-            msg: 'ezrror'
+            msg: 'error'
         });
     }
 

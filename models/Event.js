@@ -22,6 +22,12 @@ const EventSchema = new Schema({
     required: true
   },
 
+  date: {
+    type: Date,
+    default: Date.now,
+    required: true
+  },
+
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
