@@ -1,33 +1,37 @@
 /* Routas de usuarios / Auth
    host + /api/auth
-*/   
+*/
 
-const {Router} = require('express');
-const {check} = require('express-validator')
-const {createUser, userLogin, revToken} = require('../controllers/auth')
-const {validateFields} = require('../middlewares/validate-fields');
-const { validateJWT } = require('../middlewares/validate-jwt');
+const { Router } = require("express");
+const { check } = require("express-validator");
+const { createUser, userLogin, revToken } = require("../controllers/auth");
+const { validateFields } = require("../middlewares/validate-fields");
+const { validateJWT } = require("../middlewares/validate-jwt");
 const router = Router();
 
 router.post(
-  '/new',
+  "/new",
   [
-    check('name', 'El nombre es obligatorio').not().isEmpty(),
-    check('email', 'Ingresa un email válido').isEmail(),
-    check('password', 'La contraseña debe tener 6 caracteres').isLength({min: 6}),
-    validateFields
+    check("name", "Email is required").not().isEmpty(),
+    check("email", "Invalid email").isEmail(),
+    check("password", "Password must be at least 6 characters").isLength({
+      min: 6,
+    }),
+    validateFields,
   ],
-   createUser );
+  createUser
+);
 
 router.post(
-  '/login',
+  "/login",
   [
-    check('email', 'Ingresa un email válido').isEmail(),
-    check('password', 'La contraseña debe tener 6 caracteres').isLength({min: 6}),
-    validateFields
+    check("email", "Invalid email").isEmail(),
+    check("password", "Password is required").not().isEmpty(),
+    validateFields,
   ],
-   userLogin );
+  userLogin
+);
 
-router.get('/renew', validateJWT, revToken );
+router.get("/renew", validateJWT, revToken);
 
 module.exports = router;

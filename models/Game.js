@@ -1,7 +1,6 @@
-const {Schema, model} = require('mongoose');
+const { Schema, model } = require("mongoose");
 
-const EventSchema = new Schema({
-
+const GameSchema = new Schema({
   id: {
     type: Number,
     required: true,
@@ -9,7 +8,7 @@ const EventSchema = new Schema({
 
   title: {
     type: String,
-    required: true
+    required: true,
   },
 
   thumbnail: {
@@ -19,21 +18,20 @@ const EventSchema = new Schema({
 
   played: {
     type: Boolean,
-    required: true
+    required: true,
   },
 
   date: {
     type: Date,
     default: Date.now,
-    required: true
+    required: true,
   },
 
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  }
+    ref: "User",
+    required: true,
+  },
+});
 
-})
-
-module.exports = model('Event', EventSchema);
+module.exports = model("Game", GameSchema);

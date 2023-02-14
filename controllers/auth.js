@@ -1,20 +1,18 @@
-const {response} = require('express');
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
-const {genJWT} = require('../helpers/jwt');
+const { response } = require("express");
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
+const { genJWT } = require("../helpers/jwt");
 
 const createUser = async (req, res = response) => {
-
-  const {email, password} = req.body;
+  const { email, password } = req.body;
 
   try {
+    let user = await User.findOne({ email });
 
-    let user = await User.findOne({email});
-
-    if(user) {
+    if (user) {
       return res.status(400).json({
         ok: false,
-        msg: 'Ya existe un usuario con ese correo',
+        msg: "User already exists",
       });
     }
 
@@ -23,94 +21,82 @@ const createUser = async (req, res = response) => {
     const salt = bcrypt.genSaltSync();
 
     user.password = bcrypt.hashSync(password, salt);
-  
+
     await user.save();
 
-    const token  = await genJWT(user.id, user.name);
-  
+    const token = await genJWT(user.id, user.name);
+
     res.status(201).json({
       ok: true,
       uid: user.id,
       name: user.name,
-      token
+      token,
     });
-
   } catch (err) {
-
     console.warn(err);
 
     res.status(500).json({
       ok: false,
-      msg: 'error', 
+      msg: "error",
     });
-
   }
-
 };
 
-const userLogin = async (req, res = response) => {  
-
-  const {email, password} = req.body;
+const userLogin = async (req, res = response) => {
+  const { email, password } = req.body;
 
   try {
+    const user = await User.findOne({ email });
 
-    const user = await User.findOne({email});
-
-    if(!user) {
+    if (!user) {
       return res.status(400).json({
         ok: false,
-        msg: 'No existe un usuario con ese correo',
+        msg: "Wrong credentials",
       });
     }
-    
+
     const validPassword = bcrypt.compareSync(password, user.password);
 
-    if(!validPassword) {
+    if (!validPassword) {
       return res.status(400).json({
         ok: false,
-        msg: 'Contraseña incorrecta',
+        msg: "Wrong credentials",
       });
     }
 
-    const token  = await genJWT(user.id, user.name);
-    
+    const token = await genJWT(user.id, user.name);
+
     res.json({
       ok: true,
       uid: user.id,
-      name: user.name, 
-      token 
+      name: user.name,
+      token,
     });
-
   } catch (err) {
-
     console.warn(err);
 
     res.status(500).json({
       ok: false,
-      msg: 'error', 
+      msg: "error",
     });
-
   }
-
 };
 
 const revToken = async (req, res = response) => {
+  const { uid, name } = req;
 
-  const {uid, name} = req;
-
-  const token  = await genJWT(uid, name);
+  const token = await genJWT(uid, name);
 
   res.json({
     ok: true,
     uid,
     name,
-    token
+    token,
   });
-
 };
 
 module.exports = {
   createUser,
   userLogin,
-  revToken
+  revToken,
 };
